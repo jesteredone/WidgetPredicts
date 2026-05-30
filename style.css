@@ -1,32 +1,103 @@
-body { background-color: rgba(0, 0, 0, 0); font-family: 'Arial Black', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; perspective: 1200px; overflow: hidden; }
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
 
-#contenedor-apuesta { background: #050506; color: #fff; width: 380px; padding: 22px; border: 1px solid #ff003c; box-shadow: 0 0 25px rgba(255, 0, 60, 0.3); transform-origin: bottom center; transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.8s ease; }
+body, html {
+    margin: 0; padding: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0);
+    font-family: 'Share Tech Mono', monospace;
+    display: flex; justify-content: center; align-items: center;
+    overflow: hidden;
+}
 
-.oculto { opacity: 0; transform: translateY(120px) rotateX(-80deg) scale(0.8); pointer-events: none; }
-.mostrar { opacity: 1; transform: translateY(0) rotateX(0deg) scale(1); pointer-events: auto; }
+#contenedor-apuesta {
+    background: rgba(2, 12, 12, 0.95);
+    color: #00ffcc;
+    width: 90vw; max-width: 500px;
+    padding: 2.5em 2em 2em 2em;
+    border: 1px solid #00ffcc;
+    box-shadow: 0 0 20px rgba(0, 255, 204, 0.3);
+    position: relative;
+    transition: all 0.5s ease-in-out;
+}
 
-.header { text-align: center; margin-bottom: 20px; }
-.badge { background: #ff003c; color: #000; font-size: 12px; padding: 3px 12px; font-weight: 900; letter-spacing: 3px; }
-h2 { font-size: 13px; font-weight: 300; margin-top: 14px; color: #cccccc; letter-spacing: 1px; font-family: 'Segoe UI', sans-serif; }
+/* --- ANIMACIONES DE RAYOS Y GLITCH --- */
+@keyframes boot-glitch {
+    0% { transform: translate(40px, 0) scaleY(2); filter: hue-rotate(180deg); opacity: 0; }
+    10% { transform: translate(-40px, 0) scaleY(0.5); opacity: 0.5; }
+    20% { transform: translate(20px, 0); opacity: 1; }
+    30% { transform: translate(-10px, 0) scaleY(1.2); }
+    40% { transform: translate(0); scaleY(1); }
+}
 
-.duelo-container { display: flex; width: 100%; height: 30px; background: #121214; border: 1px solid rgba(255, 0, 60, 0.2); overflow: hidden; }
-.barra { display: flex; align-items: center; padding: 0 10px; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); box-sizing: border-box; }
-.si { background: #ff003c; color: #000; width: 50%; justify-content: flex-start; }
-.no { background: #ffffff; color: #000; width: 50%; justify-content: flex-end; }
-.perc { font-size: 16px; font-weight: 900; }
+@keyframes energy-rays {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 1000%; }
+}
 
-.puntos-container { display: flex; justify-content: space-between; margin-top: 10px; }
-.bando-puntos { display: flex; flex-direction: column; width: 45%; transition: all 0.5s ease; }
-.si-puntos { align-items: flex-start; text-align: left; }
-.no-puntos { align-items: flex-end; text-align: right; }
-.label { font-size: 11px; font-weight: 900; letter-spacing: 1px; margin-bottom: 2px; }
-.si-puntos .label { color: #ff003c; }
-.no-puntos .label { color: #ffffff; }
-.puntos-num { font-size: 14px; font-weight: 900; color: #adadb8; letter-spacing: 0.5px; }
+/* Rayos de energía frontales */
+#contenedor-apuesta::after {
+    content: ""; position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(0deg, rgba(0, 255, 204, 0) 0%, rgba(0, 255, 204, 0.15) 50%, rgba(0, 255, 204, 0) 100%);
+    background-size: 100% 30px;
+    pointer-events: none; opacity: 0; z-index: 15;
+}
 
-.timer { text-align: center; font-size: 10px; color: #44444a; margin-top: 20px; letter-spacing: 2px; font-family: 'Segoe UI', sans-serif; }
+/* Scanlines de fondo */
+#contenedor-apuesta::before {
+    content: " "; position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+    background-size: 100% 4px; pointer-events: none; z-index: 10;
+}
 
-.barra, .bando-puntos { transition: all 0.5s ease; }
-.ganador { transform: scale(1.05); filter: drop-shadow(0 0 12px rgba(255, 0, 60, 0.8)); }
-.no.ganador { filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.8)); }
-.perdedor { opacity: 0.15; filter: grayscale(100%); }
+/* --- ESTADOS DE VISIBILIDAD --- */
+.oculto { opacity: 0; transform: scale(0.8); pointer-events: none; }
+
+.mostrar { 
+    opacity: 1; transform: scale(1); pointer-events: auto;
+    animation: boot-glitch 0.5s steps(1) 1;
+}
+
+.mostrar::after {
+    opacity: 1;
+    animation: energy-rays 1.5s linear infinite;
+}
+
+/* --- COMPONENTES VISUALES --- */
+.top-label {
+    position: absolute; top: 0; left: 50%;
+    transform: translateX(-50%);
+    background: #00ffcc; color: #000;
+    font-size: 0.7rem; font-weight: 900;
+    padding: 3px 20px; letter-spacing: 3px;
+    clip-path: polygon(10% 0, 90% 0, 100% 100%, 0% 100%);
+    z-index: 20;
+}
+
+.header { border-left: 4px solid #00ffcc; padding-left: 10px; margin-bottom: 1.5rem; }
+.badge { background: #00ffcc; color: #000; font-size: 0.65rem; padding: 2px 8px; font-weight: 900; }
+h2 { font-size: 1.1rem; margin-top: 10px; color: #ffffff; text-shadow: 0 0 8px #00ffcc; text-transform: uppercase; }
+
+.duelo-container { display: flex; width: 100%; height: 2.2rem; background: #001a1a; border: 1px solid #00ffcc; overflow: hidden; }
+.perc { font-size: 1.1rem; font-weight: 900; z-index: 5; }
+
+.label { font-size: 0.8rem; font-weight: 900; color: #00ffcc !important; margin-bottom: 4px; text-transform: uppercase; }
+.puntos-num { font-size: 1rem; font-weight: 900; color: #ffffff; }
+
+.barra { display: flex; align-items: center; padding: 0 10px; transition: width 0.8s ease; }
+.si { background: #00ffcc; color: #000; justify-content: flex-start; }
+.no { background: #004444; color: #ffffff; justify-content: flex-end; }
+
+.puntos-container { display: flex; justify-content: space-between; margin-top: 15px; }
+.bando-puntos { display: flex; flex-direction: column; width: 45%; }
+.si-puntos { align-items: flex-start; border-left: 2px solid #00ffcc; padding-left: 10px; }
+.no-puntos { align-items: flex-end; text-align: right; border-right: 2px solid #00ffcc; padding-right: 10px; }
+
+/* Glitch de actualización */
+.glitch-active { animation: glitch-anim 0.2s steps(2) infinite; }
+@keyframes glitch-anim {
+    0% { transform: translate(3px, 0); }
+    50% { transform: translate(-3px, 0); filter: brightness(1.5); }
+    100% { transform: translate(0); }
+}
