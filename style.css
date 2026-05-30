@@ -13,58 +13,43 @@ body, html {
     background: rgba(2, 12, 12, 0.95);
     color: #00ffcc;
     width: 90vw; max-width: 500px;
-    padding: 2.5em 2em 2em 2em;
+    padding: 2.5em 2em 1.5em 2em;
     border: 1px solid #00ffcc;
     box-shadow: 0 0 20px rgba(0, 255, 204, 0.3);
     position: relative;
-    transition: all 0.5s ease-in-out;
+    transition: all 0.5s ease;
 }
 
-/* --- ANIMACIONES DE RAYOS Y GLITCH --- */
-@keyframes boot-glitch {
-    0% { transform: translate(40px, 0) scaleY(2); filter: hue-rotate(180deg); opacity: 0; }
-    10% { transform: translate(-40px, 0) scaleY(0.5); opacity: 0.5; }
-    20% { transform: translate(20px, 0); opacity: 1; }
-    30% { transform: translate(-10px, 0) scaleY(1.2); }
-    40% { transform: translate(0); scaleY(1); }
+/* Timer Estilo GITS */
+.timer-style {
+    position: absolute;
+    right: 20px; top: 15px;
+    font-size: 1.2rem;
+    color: #ffffff;
+    text-shadow: 0 0 10px #00ffcc;
+    letter-spacing: 2px;
 }
 
-@keyframes energy-rays {
-    0% { background-position: 0 0; }
-    100% { background-position: 0 1000%; }
-}
-
-/* Rayos de energía frontales */
-#contenedor-apuesta::after {
-    content: ""; position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: linear-gradient(0deg, rgba(0, 255, 204, 0) 0%, rgba(0, 255, 204, 0.15) 50%, rgba(0, 255, 204, 0) 100%);
-    background-size: 100% 30px;
-    pointer-events: none; opacity: 0; z-index: 15;
-}
-
-/* Scanlines de fondo */
-#contenedor-apuesta::before {
-    content: " "; position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
-    background-size: 100% 4px; pointer-events: none; z-index: 10;
-}
-
-/* --- ESTADOS DE VISIBILIDAD --- */
+/* --- ANIMACIONES --- */
 .oculto { opacity: 0; transform: scale(0.8); pointer-events: none; }
-
 .mostrar { 
     opacity: 1; transform: scale(1); pointer-events: auto;
     animation: boot-glitch 0.5s steps(1) 1;
 }
 
-.mostrar::after {
-    opacity: 1;
-    animation: energy-rays 1.5s linear infinite;
+@keyframes boot-glitch {
+    0% { transform: translate(40px, 0) scaleY(2); opacity: 0; }
+    20% { transform: translate(-40px, 0) opacity: 0.5; }
+    40% { transform: translate(0) scaleY(1); opacity: 1; }
 }
 
-/* --- COMPONENTES VISUALES --- */
+.glitch-active { animation: update-glitch 0.2s steps(2) infinite; }
+@keyframes update-glitch {
+    0% { transform: translate(2px, 0); filter: hue-rotate(90deg); }
+    100% { transform: translate(-2px, 0); filter: brightness(1.2); }
+}
+
+/* --- DECORACIÓN --- */
 .top-label {
     position: absolute; top: 0; left: 50%;
     transform: translateX(-50%);
@@ -72,32 +57,16 @@ body, html {
     font-size: 0.7rem; font-weight: 900;
     padding: 3px 20px; letter-spacing: 3px;
     clip-path: polygon(10% 0, 90% 0, 100% 100%, 0% 100%);
-    z-index: 20;
 }
 
-.header { border-left: 4px solid #00ffcc; padding-left: 10px; margin-bottom: 1.5rem; }
-.badge { background: #00ffcc; color: #000; font-size: 0.65rem; padding: 2px 8px; font-weight: 900; }
-h2 { font-size: 1.1rem; margin-top: 10px; color: #ffffff; text-shadow: 0 0 8px #00ffcc; text-transform: uppercase; }
+.header { border-left: 4px solid #00ffcc; padding-left: 10px; margin-bottom: 1.2rem; }
+h2 { font-size: 1.1rem; color: #ffffff; text-transform: uppercase; margin: 10px 0 0 0; }
 
-.duelo-container { display: flex; width: 100%; height: 2.2rem; background: #001a1a; border: 1px solid #00ffcc; overflow: hidden; }
-.perc { font-size: 1.1rem; font-weight: 900; z-index: 5; }
-
-.label { font-size: 0.8rem; font-weight: 900; color: #00ffcc !important; margin-bottom: 4px; text-transform: uppercase; }
-.puntos-num { font-size: 1rem; font-weight: 900; color: #ffffff; }
-
+.duelo-container { display: flex; width: 100%; height: 2rem; background: #001a1a; border: 1px solid #00ffcc; overflow: hidden; }
 .barra { display: flex; align-items: center; padding: 0 10px; transition: width 0.8s ease; }
-.si { background: #00ffcc; color: #000; justify-content: flex-start; }
+.si { background: #00ffcc; color: #000; }
 .no { background: #004444; color: #ffffff; justify-content: flex-end; }
 
 .puntos-container { display: flex; justify-content: space-between; margin-top: 15px; }
-.bando-puntos { display: flex; flex-direction: column; width: 45%; }
-.si-puntos { align-items: flex-start; border-left: 2px solid #00ffcc; padding-left: 10px; }
-.no-puntos { align-items: flex-end; text-align: right; border-right: 2px solid #00ffcc; padding-right: 10px; }
-
-/* Glitch de actualización */
-.glitch-active { animation: glitch-anim 0.2s steps(2) infinite; }
-@keyframes glitch-anim {
-    0% { transform: translate(3px, 0); }
-    50% { transform: translate(-3px, 0); filter: brightness(1.5); }
-    100% { transform: translate(0); }
-}
+.label { font-size: 0.8rem; color: #00ffcc !important; font-weight: 900; }
+.puntos-num { font-size: 1rem; color: #ffffff; }
