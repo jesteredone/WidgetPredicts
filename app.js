@@ -1,82 +1,75 @@
-// CONFIGURACIÓN (Cambia estos datos)
+// CONFIGURACIÓN PARA GITHUB
 const miCanal = "creador"; 
 const oAuthToken = "oauth:TU_TOKEN"; 
 
-// Referencias
 const contenedor = document.getElementById("contenedor-apuesta");
 const barraSi = document.getElementById("progreso-si");
 const barraNo = document.getElementById("progreso-no");
-const textoSi = document.getElementById("porcentaje-si");
-const textoNo = document.getElementById("porcentaje-no");
 const puntosSiCont = document.getElementById("puntos-si");
 const puntosNoCont = document.getElementById("puntos-no");
 const tituloH2 = document.getElementById("titulo");
-const labelSi = document.querySelector(".si-puntos .label");
-const labelNo = document.querySelector(".no-puntos .label");
+const timerDisplay = document.getElementById("timer-display");
 
-function actualizarDuelo(puntosSi, puntosNo) {
-    contenedor.classList.add("glitch-active");
-    setTimeout(() => contenedor.classList.remove("glitch-active"), 250);
+let countdownInterval;
 
-    const total = puntosSi + puntosNo;
-    let porcSi = 50, porcNo = 50;
-
-    if (total > 0) {
-        porcSi = Math.round((puntosSi / total) * 100);
-        porcNo = 100 - porcSi;
-    }
-    
-    barraSi.style.width = porcSi + "%";
-    barraNo.style.width = porcNo + "%";
-    textoSi.innerText = porcSi + "%";
-    textoNo.innerText = porcNo + "%";
-    puntosSiCont.innerText = puntosSi.toLocaleString() + " PTS";
-    puntosNoCont.innerText = puntosNo.toLocaleString() + " PTS";
+function startTimer(duration) {
+    clearInterval(countdownInterval);
+    let timer = duration;
+    countdownInterval = setInterval(() => {
+        let minutes = Math.floor(timer / 60);
+        let seconds = timer % 60;
+        timerDisplay.innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        if (--timer < 0) clearInterval(countdownInterval);
+    }, 1000);
 }
 
-// Evento: Predicción iniciada o actualizada
+function actualizarDuelo(pSi, pNo) {
+    // Glitch cada vez que los puntos cambian
+    contenedor.classList.add("glitch-active");
+    setTimeout(() => contenedor.classList.remove("glitch-active"), 200);
+
+    const total = pSi + pNo;
+    let porcSi = 50, porcNo = 50;
+    if (total > 0) {
+        porcSi = Math.round((pSi / total) * 100);
+        porcNo = 100 - porcSi;
+    }
+    barraSi.style.width = porcSi + "%";
+    barraNo.style.width = porcNo + "%";
+    document.getElementById("porcentaje-si").innerText = porcSi + "%";
+    document.getElementById("porcentaje-no").innerText = porcNo + "%";
+    puntosSiCont.innerText = pSi.toLocaleString() + " PTS";
+    puntosNoCont.innerText = pNo.toLocaleString() + " PTS";
+}
+
 ComfyJS.onPrediction = ( (event) => {
-    // Activar visibilidad y secuencia de rayos
     contenedor.classList.remove("oculto");
     contenedor.classList.add("mostrar");
-
-    // Datos dinámicos de Twitch
     tituloH2.innerText = event.title.toUpperCase();
-    labelSi.innerText = event.outcomes[0].title.toUpperCase();
-    labelNo.innerText = event.outcomes[1].title.toUpperCase();
+    
+    // Iniciar timer (Twitch suele enviar la duración en segundos)
+    if(event.prediction_window) startTimer(event.prediction_window);
 
-    const pSi = event.outcomes[0].channel_points || 0;
-    const pNo = event.outcomes[1].channel_points || 0;
-    actualizarDuelo(pSi, pNo);
+    actualizarDuelo(event.outcomes[0].channel_points || 0, event.outcomes[1].channel_points || 0);
 });
 
-// Evento: Predicción finalizada
 ComfyJS.onPredictionEnd = ( (event) => {
-    // Esperar 30 segundos antes de ocultar
+    clearInterval(countdownInterval);
+    timerDisplay.innerText = "CLOSED";
     setTimeout(() => {
         contenedor.classList.add("oculto");
         contenedor.classList.remove("mostrar");
     }, 30000); 
 });
 
-// Inicialización
-if(miCanal !== "creador" && oAuthToken.includes("oauth:")) {
-    ComfyJS.Init(miCanal, oAuthToken);
-}
+if(miCanal !== "creador") ComfyJS.Init(miCanal, oAuthToken);
 
-// PRUEBA MANUAL: Clic para ver la secuencia completa
+// PRUEBA MANUAL
 document.addEventListener("click", () => {
-    contenedor.classList.add("oculto");
-    contenedor.classList.remove("mostrar");
-
-    setTimeout(() => {
-        contenedor.classList.remove("oculto");
-        contenedor.classList.add("mostrar");
-        
-        tituloH2.innerText = "PRUEBA DE PROTOCOLO SECCIÓN 9";
-        labelSi.innerText = "HACKEAR";
-        labelNo.innerText = "DESCONECTAR";
-        
-        actualizarDuelo(Math.floor(Math.random() * 5000), Math.floor(Math.random() * 5000));
-    }, 100);
+    contenedor.classList.toggle("mostrar");
+    contenedor.classList.toggle("oculto");
+    if(!contenedor.classList.contains("oculto")) {
+        startTimer(60);
+        actualizarDuelo(Math.random()*5000, Math.random()*5000);
+    }
 });
