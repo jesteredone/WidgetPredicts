@@ -1,44 +1,29 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GITS Prediction Widget</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/comfy.js@latest/dist/comfy.min.js"></script>
+	<meta charset="UTF-8">
+	<link rel="icon" href="/favicon.ico">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<meta name="description"
+		content="Widget interactivo de predicciones estilo cyberpunk para streams de Twitch y OBS. / Cyberpunk style interactive prediction widget for Twitch and OBS streams.">
+	<meta name="keywords"
+		content="Twitch, OBS, Widget, Predictions, Predicciones, Cyberpunk, Streaming, Streamer, Vue 3, ComfyJS, DracoGilga, JesteredOne">
+	<meta name="author" content="DracoGilga, JesteredOne">
+
+	<meta property="og:title" content="GITS Predictions Widget">
+	<meta property="og:description"
+		content="Muestra las votaciones de tu chat en tiempo real en OBS. / Display your chat's real-time bets in OBS.">
+	<meta property="og:type" content="website">
+	<meta name="theme-color" content="#00ffcc">
+
+	<title>Widget Predicts</title>
 </head>
+
 <body>
-
-    <div id="contenedor-apuesta" class="oculto">
-        <div class="top-label">LUDOPATÍA ON</div>
-        <div id="timer-display" class="timer-style">00:00</div>
-
-        <div class="header">
-            <span class="badge">SECTION 9 SYSTEM</span>
-            <h2 id="titulo">ESPERANDO DATOS...</h2>
-        </div>
-
-        <div class="duelo-container">
-            <div id="progreso-si" class="barra si">
-                <span id="porcentaje-si" class="perc">50%</span>
-            </div>
-            <div id="progreso-no" class="barra no">
-                <span id="porcentaje-no" class="perc">50%</span>
-            </div>
-        </div>
-
-        <div class="puntos-container">
-            <div class="bando-puntos si-puntos">
-                <span class="label">OPCIÓN A</span>
-                <span id="puntos-si" class="puntos-num">0 PTS</span>
-            </div>
-            <div class="bando-puntos no-puntos">
-                <span class="label">OPCIÓN B</span>
-                <span id="puntos-no" class="puntos-num">0 PTS</span>
-            </div>
-        </div>
-    </div>
-
-    <script src="app.js"></script>
+	<div id="app"></div>
+	<script type="module" src="/src/main.js"></script>
 </body>
+
 </html>
